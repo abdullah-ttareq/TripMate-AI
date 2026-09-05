@@ -1,26 +1,110 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Dark mode is driven by a `.dark` class on <html> rather than the OS setting,
+  so the in-app toggle can override the system preference. The class is set
+  before paint by the script in app/layout.tsx.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+/*
+  One palette, two themes.
+
+  Every colour in the app comes from these tokens — no hard-coded hex values in
+  components. Changing a brand colour is a change here, not a search across
+  thirty files.
+
+  Note this is `@theme`, not `@theme inline`. The `inline` form substitutes a
+  token's value at build time, which freezes the light palette into every
+  utility and makes the dark overrides below do nothing.
+*/
+@theme {
+  /* Page and surfaces */
+  --color-bg: #faf7f2;          /* sand */
+  --color-surface: #ffffff;
+  --color-surface-2: #f2ede4;
+
+  /* Text */
+  --color-ink: #14100c;
+  --color-muted: #5c5348;
+
+  /* Borders */
+  --color-line: #e5ddd1;
+
+  /* Brand */
+  --color-primary: #1b2a4a;     /* deep navy */
+  --color-primary-hover: #24375f;
+  --color-primary-fg: #ffffff;
+  --color-primary-soft: #c3ccdc;
+
+  --color-accent: #c9a227;      /* sand gold — fills, dots, the CTA button */
+  --color-accent-fg: #14100c;
+
+  /* The bright gold only reaches 2.3:1 on sand, so small gold text needs a
+     darker shade. Same colour family, readable at label sizes. */
+  --color-accent-text: #8a6c0a;
+
+  /* Feedback */
+  --color-danger: #a02334;
+  --color-danger-soft: #fdeaec;
+  --color-warning: #8a6100;
+  --color-warning-soft: #fdf3dd;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --color-bg: #0c111c;
+  --color-surface: #141b2a;
+  --color-surface-2: #1a2335;
+
+  --color-ink: #f1eee9;
+  --color-muted: #9aa3b5;
+
+  --color-line: #26314a;
+
+  /* Navy is a background colour in dark mode, so the interactive blue has to
+     lift away from it or buttons disappear into the page. */
+  --color-primary: #5b86d6;
+  --color-primary-hover: #6f97e2;
+  --color-primary-fg: #0a0e17;
+  --color-primary-soft: #1f2c47;
+
+  --color-accent: #d9b64a;
+  --color-accent-fg: #14100c;
+  /* On a dark page the bright gold is already well past AA, so text and fill
+     can share one value. */
+  --color-accent-text: #d9b64a;
+
+  --color-danger: #f2909c;
+  --color-danger-soft: #2a1519;
+  --color-warning: #e0b757;
+  --color-warning-soft: #2a2114;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Serif display face for headings, matching the chosen direction. */
+.font-display {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.02em;
+}
+
+/* Colours change with the theme; without this the switch flashes. */
+body,
+nav,
+footer,
+section,
+article,
+button,
+a {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
 }
